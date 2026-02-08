@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@aepyornis/fastboot.ts@git+https://gitlab.com/aepyornis/fastboot.ts#51351bf583082cf0cbb5979e4bcec5c87e7004ae":
+  version "0.0.14"
+  resolved "git+https://gitlab.com/aepyornis/fastboot.ts#51351bf583082cf0cbb5979e4bcec5c87e7004ae"
+  dependencies:
+    "@zip.js/zip.js" "^2.7.60"
+
 "@babel/generator@^7.28.6":
   version "7.29.1"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.29.1.tgz#d09876290111abbb00ef962a7b83a5307fba0d50"
@@ -978,10 +984,12 @@
   resolved "https://registry.yarnpkg.com/@vueuse/shared/-/shared-14.2.0.tgz#a03c496adf2aa1dc96cfa44ba64b51fe8a7e82c0"
   integrity sha512-Z0bmluZTlAXgUcJ4uAFaML16JcD8V0QG00Db3quR642I99JXIDRa2MI2LGxiLVhcBjVnL1jOzIvT5TT2lqJlkA==
 
-"@zip.js/zip.js@2.2.27":
-  version "2.2.27"
-  resolved "https://registry.yarnpkg.com/@zip.js/zip.js/-/zip.js-2.2.27.tgz#672c63fd586d83c6f6c6231a38b54a16b5abe267"
-  integrity sha512-lQLsq41xUIGJnUizICgjLL+1hrnlLcqyWnQcaNi8FdsxfJl8y0bqdolDit8o65Huai+/GwXbCODMVu05kNU8mA==
+"@zip.js/zip.js@^2.7.60":
+  version "2.8.17"
+  resolved "https://registry.yarnpkg.com/@zip.js/zip.js/-/zip.js-2.8.17.tgz#a963d69fdd79b4e979df38feb8a9884ad921ee4f"
+  integrity sha512-3UdSsm9D9wy8+Oclimd3W9mWqiGptbrL7kBxAdXr/FLN2FSmNnAiyRol93heAffLGDzNwY5nnvDEjMmo8JbeeA==
+  dependencies:
+    web-worker "^1.5.0"
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -1007,12 +1015,6 @@ alien-signals@^3.0.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/alien-signals/-/alien-signals-3.1.2.tgz#26e623e3ed81e401df1a7c503f726e2288a4fa02"
   integrity sha512-d9dYqZTS90WLiU0I5c6DHj/HcKkF8ZyGN3G5x8wSbslulz70KOxaqCT0hQCo9KOyhVqzqGojvNdJXoTumZOtcw==
-
-"android-fastboot@git+https://gitlab.com/luk1337/fastboot.js#b26c4af1f8e48af1c9b2c31656697a07575a7019":
-  version "1.1.3"
-  resolved "git+https://gitlab.com/luk1337/fastboot.js#b26c4af1f8e48af1c9b2c31656697a07575a7019"
-  dependencies:
-    "@zip.js/zip.js" "2.2.27"
 
 ansi-styles@^4.1.0:
   version "4.3.0"
@@ -2357,6 +2359,11 @@ vue@^3.5.27:
     "@vue/runtime-dom" "3.5.27"
     "@vue/server-renderer" "3.5.27"
     "@vue/shared" "3.5.27"
+
+web-worker@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/web-worker/-/web-worker-1.5.0.tgz#71b2b0fbcc4293e8f0aa4f6b8a3ffebff733dcc5"
+  integrity sha512-RiMReJrTAiA+mBjGONMnjVDP2u3p9R1vkcGz6gDIrOMT3oGuYwX2WRMYI9ipkphSuE5XKEhydbhNEJh4NY9mlw==
 
 webpack-virtual-modules@^0.6.2:
   version "0.6.2"
