@@ -6,7 +6,7 @@
           <h1 class="m-0 flex-none self-stretch text-3xl font-medium">Fastboot client</h1>
           <div v-show="webUsbSupported" class="order-1 flex-none grow-0 self-stretch">
             <div v-show="connected" class="mb-4 justify-center">
-              <textarea ref="log" class="resize-none" cols="80" rows="20"></textarea>
+              <textarea ref="log" class="resize-none font-mono" cols="80" rows="20"></textarea>
 
               <input ref="bootImage" class="hidden" type="file" @change="bootImageExec" />
               <input ref="flashImage" class="hidden" type="file" @change="flashImageExec" />
@@ -30,13 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import * as fastboot from 'android-fastboot'
-
-defineOptions({ name: 'FastbootView' })
+import { onUnmounted, ref, useTemplateRef } from 'vue'
+import { FastbootClient } from '@aepyornis/fastboot.ts'
 
 const connected = ref(false)
-const device = ref<fastboot.FastbootDevice | null>(null)
+const client = ref<FastbootClient | null>(null)
 const partition = ref('')
 // @ts-expect-error: Some browsers have WebUSB, do not enforce strict type check here
 const webUsbSupported = typeof navigator !== 'undefined' && navigator.usb !== undefined
@@ -45,40 +43,29 @@ const log = useTemplateRef('log')
 const bootImageInput = useTemplateRef('bootImage')
 const flashImageInput = useTemplateRef('flashImage')
 
-onMounted(() => {
-  device.value = new fastboot.FastbootDevice()
-
-  fastboot.setDebugLevel(2 /* verbose */)
-  fastboot.setDebugLogger((...data) => {
-    console.log(...data)
-
-    if (!log.value) return
-
-    if (log.value.value.length > 0) {
-      log.value.value += '\n'
-    }
-    log.value.value += [...data].join(' ')
+function appendLog(message: string) {
+  if (log.value) {
+    log.value.value += message + '\n'
     log.value.scrollTop = log.value.scrollHeight
-  })
-})
+  }
+}
+
+const logger = { log: appendLog }
 
 onUnmounted(() => {
   connected.value = false
-  device.value = null
+  client.value = null
   partition.value = ''
 })
 
 async function connect() {
   try {
-    await device.value?.connect()
+    const usbDevice = await FastbootClient.requestUsbDevice()
+    client.value = new FastbootClient(usbDevice, logger)
 
-    if (log.value) {
-      log.value.value = ''
-    }
+    await client.value?.getVar('product')
+    await client.value?.getVar('serialno')
     connected.value = true
-
-    await device.value?.getVariable('product')
-    await device.value?.getVariable('serialno')
   } catch (err) {
     console.log(err)
   }
@@ -87,11 +74,17 @@ async function connect() {
 function bootImage() {
   bootImageInput.value?.click()
 }
-
 async function bootImageExec(event: Event) {
   const file = (event?.currentTarget as HTMLInputElement)?.files?.[0]
-  if (!file) return
-  await device.value?.bootBlob(file)
+  if (!file || !client.value) return
+  const buffer = await file.arrayBuffer()
+  await client.value.fd.transferData(buffer)
+  const res = await client.value.fd.sendCommand('boot')
+
+  if (res && res.status === 'OKAY') {
+    client.value = null
+    connected.value = false
+  }
 }
 
 function flashImage() {
@@ -106,17 +99,20 @@ function flashImage() {
 async function flashImageExec(event: Event) {
   const file = (event?.currentTarget as HTMLInputElement)?.files?.[0]
   if (!file || !partition.value) return
-  await device.value?.flashBlob(partition.value, 'current', file)
+  await client.value?.doFlash(partition.value, file, 'current')
 }
 
 async function getVariable() {
   const variable = window.prompt('Variable name (e.g. version-bootloader)', '')
   if (!variable) return
-  await device.value?.getVariable(variable)
+  await client.value?.getVar(variable)
 }
 
 async function rebootToRecovery() {
-  await device.value?.reboot('recovery')
-  connected.value = false
+  const res = await client.value?.fd.exec('reboot-recovery')
+  if (res && res.status === 'OKAY') {
+    client.value = null
+    connected.value = false
+  }
 }
 </script>
