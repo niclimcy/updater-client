@@ -11,7 +11,7 @@
           {{ filename }}
         </div>
         <div class="flex items-center gap-2">
-          <a :href="url" class="btn px-5 py-2">
+          <a :href="url" :aria-label="`Download ${filename}`" class="btn px-5 py-2">
             <svg
               width="16"
               height="16"
