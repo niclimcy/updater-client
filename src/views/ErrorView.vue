@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-center justify-center text-center text-2xl">
+  <main class="flex items-center justify-center text-center text-2xl">
     <span>{{ store.error || message }}</span>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">

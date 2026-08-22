@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <main class="flex flex-col">
     <NavBar :tabs="tabs">
       <template #left>
         <span>{{ oem }}</span>
@@ -12,7 +12,7 @@
     <div class="grow overflow-auto">
       <RouterView />
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
